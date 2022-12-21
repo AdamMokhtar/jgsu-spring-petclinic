@@ -1,27 +1,27 @@
 pipeline {
     agent any
+    triggers{
+        pollSCM('* * * * *')
+    }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout'){
             steps {
-                git url: 'https://github.com/AdamMokhtar/jgsu-spring-petclinic.git',
-                branch: 'main'
-
+                // Get some code from a GitHub repository
+                git branch: 'main', url: 'https://github.com/AdamMokhtar/jgsu-spring-petclinic.git'
             }
-             stage('Build') {
+        }
+        stage('Build') {
             steps {
                 sh './mvnw clean package'
-
             }
 
             post {
-                always  {
+                always {
                     junit '**/target/surefire-reports/TEST-*.xml'
                     archiveArtifacts 'target/*.jar'
                 }
             }
         }
     }
-}
-
 }
